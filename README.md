@@ -3,7 +3,15 @@ gelly
 
 booru client in vala
 
+Welcoming contributors! If you'd like to join the project feel free to make issues to discuss things or anything.
+
 <img src="http://i.imgur.com/kmc97kJ.png"></img>
+
+
+Notes
+=====
+
+It doesn't use threading yet so it will stop for a bit when you do a search.
 
 
 Code Overview
