@@ -113,7 +113,7 @@ public class Uru : Window {
 	}
 
 	void perform_search(string tags) {
-		string url = "http://safebooru.org/index.php?page=dapi&s=post&q=index&tags=" + tags;
+		string url = "http://safebooru.org/index.php?page=dapi&s=post&q=index&limit=20&tags=" + tags;
 
 		//print(url);
 		//print("!!!");
