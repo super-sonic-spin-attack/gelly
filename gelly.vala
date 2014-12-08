@@ -4,7 +4,7 @@ using Xml;
 using Xml.XPath;
 
 // To compile you need vala, then use this command line:
-// valac --pkg gtk+-3.0 --pkg libsoup-2.4 --pkg libxml-2.0 uru.vala
+// valac --pkg gtk+-3.0 --pkg libsoup-2.4 --pkg libxml-2.0 gelly.vala
 
 public errordomain XPathFailed {
     CODE_1A
