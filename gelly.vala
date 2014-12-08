@@ -212,6 +212,7 @@ public class ImageStorer : GLib.Object {
 			try {
 				web_image.copy (destination, FileCopyFlags.NONE);
 			} catch(GLib.Error e) {
+				print(e.message);
 				error("I couldn't store the image! [" + store + " - " + url + "]");
 			}
 		}
