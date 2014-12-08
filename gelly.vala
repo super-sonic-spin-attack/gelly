@@ -4,14 +4,14 @@ using Xml;
 using Xml.XPath;
 
 // To compile you need vala, then use this command line:
-// valac --pkg gtk+-3.0 --pkg libsoup-2.4 --pkg libxml-2.0 gelly.vala
+// valac --pkg gtk+-3.0 --pkg libsoup-2.4 --pkg libxml-2.0 uru.vala
 
 public errordomain XPathFailed {
     CODE_1A
 }
 
 struct Post {
-  public string preview_url;
+    public string preview_url;
 	public Gtk.Image preview_image;
 	public string file_url;
 	public string tags;
@@ -114,6 +114,9 @@ public class Uru : Window {
 
 	void perform_search(string tags) {
 		string url = "http://safebooru.org/index.php?page=dapi&s=post&q=index&tags=" + tags;
+
+		//print(url);
+		//print("!!!");
 		
 		Soup.Session session = new Soup.Session(); // TODO should we create a soup session every time or just once?
 		Soup.Message message = new Soup.Message ("GET", url);
@@ -204,18 +207,58 @@ public class ImageStorer : GLib.Object {
 		}
 	}
 
-	public Gtk.Image storeLocal(string url) {
-		var web_image = File.new_for_uri (url) ;
-		string dest_name = store + "/" + web_image.get_basename ();
-		if(!FileUtils.test (dest_name, FileTest.EXISTS)) {
-			var destination = File.new_for_path (dest_name);
-			try {
-				web_image.copy (destination, FileCopyFlags.NONE);
-			} catch(GLib.Error e) {
-				print(e.message);
-				error("I couldn't store the image! [" + store + " - " + url + "]");
-			}
+		private string split_filename_off_url(string url) {
+		try {
+			var r = new Regex("/");
+			var o = r.split (url);
+			return o[o.length-1];
+		} catch(RegexError r) {
+			print("WARNING: Regex Error!");
+			return "tmp.jpg";
 		}
+	}
+
+	public Gtk.Image storeLocal(string url) {
+		Soup.Session session = new Soup.Session();
+		Soup.Message message = new Soup.Message ("GET", url);
+		session.send_message(message);
+
+		var name = split_filename_off_url(url);
+		var dest_name = store + "/" + name;
+
+		if(!FileUtils.test (dest_name, FileTest.EXISTS)) {
+			
+			var file = File.new_for_path (dest_name);
+			
+			{
+				// Create a new file with this name
+				var file_stream = file.create (FileCreateFlags.NONE);
+				
+				// Test for the existence of file
+				if (file.query_exists ()) {
+					stdout.printf ("File successfully created.\n");
+				}
+				
+				// Write text data to file
+				var data_stream = new DataOutputStream (file_stream);
+				data_stream.write (message.response_body.data);
+			} // Streams closed at this point
+			
+		}
+		
+		
+		// var web_image = File.new_for_uri (url) ;
+		// string dest_name = store + "/" + web_image.get_basename ();
+		// if(!FileUtils.test (dest_name, FileTest.EXISTS)) {
+		// 	var destination = File.new_for_path (dest_name);
+		// 	try {
+		// 		web_image.copy (destination, FileCopyFlags.NONE);
+		// 	} catch(Error e) {
+		// 		error("I couldn't store the image! [" + store + " - " + url + "]");
+		// 	}
+		// }
+		
+		// return dest_name;
 		
 		var i = new Gtk.Image ();
 		i.set_from_file(dest_name);
