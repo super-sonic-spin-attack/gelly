@@ -269,7 +269,7 @@ public class ImageStorer : GLib.Object {
 					// Process the result:
 					stdout.printf ("Status Code: %u\n", mess.status_code);
 					stdout.printf ("Message length: %lld\n", mess.response_body.length);
-					stdout.printf ("Data: \n%s\n", (string) mess.response_body.data);
+					//stdout.printf ("Data: \n%s\n", (string) mess.response_body.data);
 					
 					message = mess;
 					Idle.add((owned) callback);
